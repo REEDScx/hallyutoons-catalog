@@ -20,5 +20,5 @@ assignees: ''
 *   **Por que você acha que este manhwa deveria estar no Hallyutoons? (Opcional)**
 
 **Antes de enviar:**
-- [ ] Eu verifiquei o catálogo do [Hallyutoons](https://hallyutoons.site) para garantir que este manhwa ainda não está listado. (Substitua pelo link do seu site)
+- [ ] Eu verifiquei o catálogo do [Hallyutoons](https://hallyutoons.site) para garantir que este manhwa ainda não está listado.
 - [ ] Eu verifiquei as [issues abertas de sugestão de obra](https://github.com/REEDScx/hallyutoons-catalog/issues?q=is%3Aissue+is%3Aopen+label%3Asugest%C3%A3o-obra) para ver se este manhwa já foi sugerido.
