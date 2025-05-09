@@ -34,7 +34,7 @@ Use o [template de Sugestão de Melhoria](https://github.com/REEDScx/hallyutoons
 
 ## Sugerindo Manhwas
 
-Use o [template de Sugestão de Manhwa](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=sugest%C3%A3o-obra&template=manhwa_suggestion.md&title=%5BSUGGESTION%5D+Novo+Manhwa%3A+) e forneça o máximo de informações possível:
+Use o [template de Sugestão de Manhwa](https://github.com/REEDScx/hallyutoons-catalog/issues) e forneça o máximo de informações possível:
 
 *   Título da Obra (Original e em Português, se souber).
 *   Autor(es)/Artista(s).
@@ -47,7 +47,7 @@ Por favor, verifique se o manhwa já não está em nosso catálogo antes de suge
 
 ## Sugerindo Scans (Grupos de Tradução)
 
-Use o [template de Sugestão de Scan](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=sugest%C3%A3o-scan&template=scan_suggestion.md&title=%5BSUGGESTION%5D+Nova+Scan%3A+) e inclua:
+Use o [template de Sugestão de Scan](https://github.com/REEDScx/hallyutoons-catalog/issues) e inclua:
 
 *   Nome da Scan.
 *   Link para o site oficial, Discord, ou principal meio de contato/distribuição da scan.
