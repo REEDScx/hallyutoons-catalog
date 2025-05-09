@@ -2,7 +2,7 @@
 
 Bem-vindo ao Hub da Comunidade Hallyutoons! 🎉
 
-
+![Hallyutoons Logo](https://cdn.discordapp.com/attachments/1325562779960086561/1361757645953831144/assets_task_01jrwymy5nf2j9n284wvdjn0yk_img_0.webp?ex=681e3da3&is=681cec23&hm=4501e7eb55b535b53073ad69382ced6547d9da459a60b51fec1bde176ba9a900&)
 
 Este repositório é o local central para todos os fãs e usuários do [Hallyutoons](https://hallyutoons.site)
 
