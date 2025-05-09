@@ -20,7 +20,7 @@ Este repositório é o local central para todos os fãs e usuários do [Hallyuto
 
 ## Como Contribuir
 
-Agradecemos muito sua ajuda para tornar o Hallyutoons ainda melhor! Antes de contribuir, por favor, leia nosso [Guia de Contribuição](CONTRIBUTING.md).
+Agradecemos muito sua ajuda para tornar o Hallyutoons ainda melhor! Antes de contribuir, por favor, leia nosso [Guia de Contribuição](Contribuindo.md).
 
 *   **Para reportar um Bug, Melhorais, Adições, Sugestões de Scans e Etc** [Abra uma Issue com os devidos templates](https://github.com/REEDScx/hallyutoons-catalog/issues)
 
