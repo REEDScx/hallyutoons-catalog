@@ -1,119 +1,89 @@
+// src/utils/data-transform.ts
 import { Manhwa, ManhwaStatus } from "../types/manhwa";
-import { sanitizeText } from "./security";
-import { FALLBACK_IMAGE, KOREAN_INDICATORS } from "../config/api.config";
+import { FALLBACK_IMAGE_URL, KOREAN_INDICATORS_EXAMPLES } from "../config/api.config";
 
-/**
- * Helper function to convert Kitsu API data to our Manhwa format
- * Enhanced with better error handling and validation
- */
+// Simples sanitizador de texto para uma biblioteca (pode ser mais robusto se necessário)
+const sanitizeTextLib = (text: string | null | undefined): string => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[<>]/g, ''); // Exemplo simples, ajuste conforme necessário
+};
+
 export const mapKitsuToManhwa = (item: any): Manhwa => {
   try {
-    // Handle null or undefined item
     if (!item || !item.attributes) {
-      console.error("Invalid API response item", item);
-      return createFallbackManhwa("api-error");
+      console.error("Invalid Kitsu item for mapping", item);
+      return createInternalFallbackManhwa("api-item-error");
     }
 
-    // Get the poster image with fallbacks
-    const posterImage = item.attributes.posterImage?.original || 
-                      item.attributes.posterImage?.large || 
-                      item.attributes.posterImage?.medium || 
-                      FALLBACK_IMAGE;
+    const attrs = item.attributes;
+    const posterImage = attrs.posterImage?.original ||
+                        attrs.posterImage?.large ||
+                        attrs.posterImage?.medium ||
+                        FALLBACK_IMAGE_URL;
 
-    // Get genres with validation
-    let genres = [];
+    let genresApi = [];
     try {
-      genres = (item.relationships?.genres?.data?.map((g: any) => g.id) || ["Manhwa"])
-               .filter(Boolean)
-               .map(sanitizeText);
-    } catch (error) {
-      console.warn("Error processing genres:", error);
-      genres = ["Manhwa"];
+      genresApi = (item.relationships?.genres?.data?.map((g: any) => g.id /* ou g.attributes.name se disponível e preferido */) || ["Unknown Genre"])
+                  .filter(Boolean)
+                  .map(sanitizeTextLib);
+    } catch (e) { genresApi = ["Unknown Genre"]; }
+
+    let authorsApi = ["Unknown Author"];
+    // Kitsu geralmente não tem "authors" diretamente como manhwas,
+    // pode ser staff com role "author" ou "story", ou um campo customizado.
+    // Esta é uma simplificação. Você precisaria adaptar se Kitsu tiver dados de autor melhores.
+    // No seu código original, você usava `item.attributes.authorNames` ou `item.attributes.author`
+    // Se esses campos existem na resposta da Kitsu que você recebe, use-os:
+    if (attrs.authorNames && Array.isArray(attrs.authorNames) && attrs.authorNames.length > 0) {
+        authorsApi = attrs.authorNames.map(sanitizeTextLib);
+    } else if (attrs.author) {
+        authorsApi = [sanitizeTextLib(attrs.author)];
     }
 
-    // Get authors with proper validation
-    let authors = [];
-    try {
-      if (Array.isArray(item.attributes.authorNames) && item.attributes.authorNames.length > 0) {
-        authors = item.attributes.authorNames;
-      } else if (item.attributes.author) {
-        authors = [item.attributes.author];
-      } else {
-        authors = ["Unknown"];
+
+    const id = item.id || `generated-${Date.now()}`;
+    let rating = 0;
+    if (attrs.averageRating) {
+      const parsedRating = parseFloat(attrs.averageRating);
+      if (!isNaN(parsedRating)) {
+        rating = Math.max(0, Math.min(5, parsedRating / 20)); // Kitsu rating é 0-100
       }
-    } catch (error) {
-      console.warn("Error processing authors:", error);
-      authors = ["Unknown"];
-    }
-
-    // Generate a safe ID if none exists
-    const id = item.id || `generated-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-
-    // Calculate rating safely
-    let rating = 4.0;
-    try {
-      if (item.attributes.averageRating) {
-        const parsedRating = parseFloat(item.attributes.averageRating);
-        if (!isNaN(parsedRating)) {
-          rating = parsedRating / 20;
-          // Clamp between 0 and 5
-          rating = Math.max(0, Math.min(5, rating));
-        }
-      }
-    } catch (error) {
-      console.warn("Error calculating rating:", error);
-      // Keep default 4.0
     }
 
     return {
       id: id,
-      title: sanitizeText(item.attributes.canonicalTitle || 
-             item.attributes.titles?.en_jp || 
-             item.attributes.titles?.en || 
-             item.attributes.titles?.ko_kr ||
-             "Untitled"),
-      description: sanitizeText(item.attributes.synopsis || "No description available"),
+      title: sanitizeTextLib(attrs.canonicalTitle || attrs.titles?.en_jp || attrs.titles?.en || "Untitled"),
+      description: sanitizeTextLib(attrs.synopsis || "No description available."),
       coverImage: posterImage,
-      authors: authors,
-      genres: genres,
+      authors: authorsApi,
+      genres: genresApi,
       rating: rating,
-      status: mapStatus(item.attributes.status),
-      releaseDate: sanitizeText(item.attributes.startDate || "Unknown"),
-      updatedAt: sanitizeText(item.attributes.updatedAt || item.attributes.createdAt || new Date().toISOString()),
+      status: mapKitsuStatus(attrs.status),
+      releaseDate: sanitizeTextLib(attrs.startDate || "Unknown"),
+      updatedAt: sanitizeTextLib(attrs.updatedAt || attrs.createdAt || new Date().toISOString()),
     };
   } catch (error) {
-    console.error("Critical error mapping Kitsu data to Manhwa:", error);
-    return createFallbackManhwa("mapping-error");
+    console.error("Error mapping Kitsu data to Manhwa:", error);
+    return createInternalFallbackManhwa("mapping-error");
   }
 };
 
-/**
- * Map Kitsu status to our status enum
- */
-export const mapStatus = (status: string): ManhwaStatus => {
+export const mapKitsuStatus = (status?: string): ManhwaStatus => {
   switch (status?.toLowerCase()) {
-    case "current":
-      return ManhwaStatus.Ongoing;
-    case "finished":
-      return ManhwaStatus.Completed;
-    case "tba":
-      return ManhwaStatus.Hiatus;
-    case "unreleased":
-      return ManhwaStatus.Cancelled;
-    default:
-      return ManhwaStatus.Ongoing;
+    case "current": return ManhwaStatus.Ongoing;
+    case "finished": return ManhwaStatus.Completed;
+    case "on_hiatus": return ManhwaStatus.Hiatus; // Kitsu usa on_hiatus
+    case "cancelled": return ManhwaStatus.Cancelled; // Kitsu usa cancelled
+    case "upcoming": return ManhwaStatus.Ongoing; // ou um novo status "Upcoming"
+    default: return ManhwaStatus.Ongoing; // Ou ManhwaStatus.Hiatus se preferir para desconhecido
   }
 };
 
-/**
- * Create a fallback manhwa object for error cases
- * Enhanced with error type information
- */
-export const createFallbackManhwa = (errorType: string = "unknown"): Manhwa => ({
+export const createInternalFallbackManhwa = (errorType: string = "unknown"): Manhwa => ({
   id: `error-${errorType}-${Date.now()}`,
-  title: "Unable to Load Data",
-  description: "There was an error loading the manhwa data. Please try again later.",
-  coverImage: FALLBACK_IMAGE,
+  title: "Data Unavailable",
+  description: "Could not load manhwa data.",
+  coverImage: FALLBACK_IMAGE_URL,
   authors: ["Unknown"],
   genres: ["Error"],
   rating: 0,
@@ -122,106 +92,27 @@ export const createFallbackManhwa = (errorType: string = "unknown"): Manhwa => (
   updatedAt: new Date().toISOString(),
 });
 
-/**
- * Detects if content is likely Korean-related based on various indicators
- * IMPROVED: Now returns true to make filtering less restrictive and show more content
- */
-export const isKoreanContent = (item: any): boolean => {
-  if (!item || !item.attributes) {
-    console.log("Invalid item provided to isKoreanContent check");
-    return false;
-  }
-  
-  // Always return true to make the filter less restrictive and show all content
-  return true;
-  
-  // The code below is intentionally commented out to make the filter less restrictive
-  // We'll show all manga/manhwa content for now until we have better filtering
-  /*
-  // Check subtype directly
-  if (item.attributes.subtype === "manhwa") return true;
-  
-  // Check for Korean title
+// Esta função se torna mais um exemplo de como você *poderia* filtrar do que uma regra estrita
+// em um cliente de API genérico.
+export const isLikelyKoreanContent = (item: any): boolean => {
+  if (!item || !item.attributes) return false;
+  if (item.attributes.subtype?.toLowerCase() === "manhwa") return true;
   if (item.attributes.titles?.ko_kr) return true;
-  
-  // Check if any Korean indicators are in the title or description
+
   const title = (item.attributes.canonicalTitle || "").toLowerCase();
   const synopsis = (item.attributes.synopsis || "").toLowerCase();
-  
-  // Check title and synopsis
-  return KOREAN_INDICATORS.some(indicator => 
+
+  return KOREAN_INDICATORS_EXAMPLES.some(indicator =>
     title.includes(indicator) || synopsis.includes(indicator)
   );
-  */
 };
 
-/**
- * Normalize text for search purposes
- */
-export const normalizeText = (text: string): string => {
+export const normalizeSearchText = (text: string): string => {
+  if (typeof text !== 'string') return '';
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/[^\w\s]/g, '') // Remove special characters
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\w\s]/g, '')
     .trim();
-};
-
-/**
- * Score search relevance based on multiple factors
- * Enhanced with additional error handling
- */
-export const scoreSearchRelevance = (item: any, query: string): number => {
-  if (!item || !item.attributes) return 0;
-  if (!query || typeof query !== 'string') return 0;
-  
-  try {
-    const normalizedQuery = normalizeText(query);
-    const normalizedTitle = normalizeText(item.attributes.canonicalTitle || "");
-    const normalizedSynopsis = normalizeText(item.attributes.synopsis || "");
-    
-    let score = 0;
-    
-    // Exact title match gives highest score
-    if (normalizedTitle === normalizedQuery) {
-      score += 100;
-    }
-    // Title starts with query
-    else if (normalizedTitle.startsWith(normalizedQuery)) {
-      score += 75;
-    }
-    // Title includes query
-    else if (normalizedTitle.includes(normalizedQuery)) {
-      score += 50;
-    }
-    
-    // Contains in synopsis
-    if (normalizedSynopsis.includes(normalizedQuery)) {
-      score += 25;
-    }
-    
-    // Bonus for popularity
-    if (item.attributes.popularityRank && typeof item.attributes.popularityRank === 'number') {
-      score += Math.max(0, 10 - Math.floor(item.attributes.popularityRank / 1000));
-    }
-    
-    // Bonus for Korean content
-    if (isKoreanContent(item)) {
-      score += 20;
-    }
-    
-    return score;
-  } catch (error) {
-    console.error("Error scoring search relevance:", error);
-    return 0;
-  }
-};
-
-/**
- * A simple function to check if the API response is valid
- */
-export const isValidApiResponse = (data: any): boolean => {
-  if (!data) return false;
-  if (!Array.isArray(data.data) && !data.data) return false;
-  return true;
 };
