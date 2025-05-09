@@ -21,13 +21,8 @@ Este repositório é o local central para todos os fãs e usuários do [Hallyuto
 
 Agradecemos muito sua ajuda para tornar o Hallyutoons ainda melhor! Antes de contribuir, por favor, leia nosso [Guia de Contribuição](CONTRIBUTING.md).
 
-*   **Para reportar um Bug:** [Abra uma Issue com o template de Bug](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D)
-*   **Para sugerir uma Melhoria:** [Abra uma Issue com o template de Melhoria](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D)
-*   **Para sugerir um Manhwa:** [Abra uma Issue com o template de Sugestão de Manhwa](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=sugest%C3%A3o-obra&template=manhwa_suggestion.md&title=%5BSUGGESTION%5D+Novo+Manhwa%3A+)
-*   **Para sugerir uma Scan:** [Abra uma Issue com o template de Sugestão de Scan](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=sugest%C3%A3o-scan&template=scan_suggestion.md&title=%5BSUGGESTION%5D+Nova+Scan%3A+)
-*   **Para discussões gerais:** [Visite nossa aba de Discussões](https://github.com/SEU_USUARIO/hallyutoons-community/discussions)
+*   **Para reportar um Bug, Melhorais, Adições, Sugestões de Scans e Etc** [Abra uma Issue com os devidos templates](https://github.com/REEDScx/hallyutoons-catalog/issues)
 
-  
 ## Código de Conduta
 
 Esperamos que todos os participantes da nossa comunidade sigam nosso [Código de Conduta](CODE_OF_CONDUCT.md) para garantir um ambiente respeitoso e colaborativo.
