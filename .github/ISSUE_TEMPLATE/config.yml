@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/REEDScx/hallyutoons-catalog/discussions
     about: Por favor, use as Discussões para perguntas gerais, ideias ou para conversar com a comunidade.
   - name: 📖 Documentação Hallyutoons (se houver)
-    url: https://hallyutoons.site/sobre # Ou link para uma Wiki, se você criar uma
+    url: https://hallyutoons.site # Ou link para uma Wiki, se você criar uma
     about: Verifique nossa documentação para FAQs e guias.
