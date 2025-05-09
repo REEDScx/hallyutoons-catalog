@@ -1,78 +1,55 @@
-
+// src/utils/api-helpers.ts
 import { fetchWithRetry } from "./api-retry";
-import { toast } from "@/hooks/use-toast";
+import { KITSU_API_HEADERS } from "../config/api.config"; // Usar config local
 
 /**
  * Builds a URL with parameters
- * @param baseUrl Base URL string
- * @param params Object of key-value parameters
- * @returns Formatted URL string with parameters
  */
 export const buildUrl = (baseUrl: string, params: Record<string, any> = {}): string => {
   const url = new URL(baseUrl);
-  
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       url.searchParams.append(key, value.toString());
     }
   });
-  
   return url.toString();
 };
 
 /**
- * Busca aprimorada com tempo limite e registro
- * @param url URL to fetch
- * @param options Fetch options
- * @returns Promise with parsed JSON response
+ * Fetch with timeout and Kitsu-specific headers
  */
-export const fetchWithTimeout = async (url: string, options?: RequestInit, timeoutMs: number = 15000): Promise<any> => {
-  console.log(`🌐 Fetching: ${url}`);
+export const fetchKitsuWithTimeout = async (url: string, options?: RequestInit, timeoutMs: number = 10000): Promise<any> => {
+  // console.log(`🌐 Kitsu Fetching: ${url}`); // Logging pode ser opcional para uma lib
   const startTime = Date.now();
-  
   try {
-    // Use nosso novo utilitário fetchWithRetry
     const data = await fetchWithRetry(url, {
       ...options,
       headers: {
-        'Accept': 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
+        ...KITSU_API_HEADERS,
         ...options?.headers,
       },
     });
-    
     const elapsedTime = Date.now() - startTime;
-    console.log(`⏱️ Request took ${elapsedTime}ms`);
-    console.log(`✅ Response received successfully`);
-    
+    // console.log(`⏱️ Kitsu Request took ${elapsedTime}ms`);
     return data;
   } catch (error) {
     const elapsedTime = Date.now() - startTime;
-    console.error(`❌ Error after ${elapsedTime}ms:`, error);
+    console.error(`❌ Kitsu Error after ${elapsedTime}ms:`, error);
     throw error;
   }
 };
 
 /**
- * Wrapper de chamada de API seguro com tratamento de erros e fallbacks
- * Aprimorado com notificação ao usuário
- * @param Função fn Async para executar
- * @param fallbackValue Fallback Resultado da função ou valor de fallback
- * @returns Resultado da função ou valor de fallback
+ * Safe API call wrapper 
  */
-export async function safeApiCall<T>(fn: () => Promise<T>, fallbackValue: T): Promise<T> {
+export async function safeKitsuApiCall<T>(fn: () => Promise<T>, fallbackValue: T): Promise<T> {
   try {
     return await fn();
   } catch (error: any) {
-    console.error("API call failed:", error);
-    
-    // Show a toast notification for API errors
-    toast({
-      title: "Erro na API",
-      description: error?.message || "Ocorreu um erro ao buscar os dados. Por favor, tente novamente mais tarde.",
-      variant: "destructive"
-    });
-    
+    console.error("Kitsu API call failed:", error);
+    // Em uma biblioteca, você pode querer apenas relançar o erro
+    // ou ter um sistema de logging/callback de erro configurável.
+    // Por simplicidade, retornamos o fallback.
     return fallbackValue;
   }
 }
