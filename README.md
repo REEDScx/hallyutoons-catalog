@@ -27,8 +27,7 @@ Agradecemos muito sua ajuda para tornar o Hallyutoons ainda melhor! Antes de con
 *   **Para sugerir uma Scan:** [Abra uma Issue com o template de Sugestão de Scan](https://github.com/SEU_USUARIO/hallyutoons-community/issues/new?assignees=&labels=sugest%C3%A3o-scan&template=scan_suggestion.md&title=%5BSUGGESTION%5D+Nova+Scan%3A+)
 *   **Para discussões gerais:** [Visite nossa aba de Discussões](https://github.com/SEU_USUARIO/hallyutoons-community/discussions)
 
-*(Substitua `SEU_USUARIO/hallyutoons-community` pelos links corretos do seu repositório)*
-
+  
 ## Código de Conduta
 
 Esperamos que todos os participantes da nossa comunidade sigam nosso [Código de Conduta](CODE_OF_CONDUCT.md) para garantir um ambiente respeitoso e colaborativo.
@@ -40,3 +39,7 @@ O conteúdo deste repositório (documentação como este README, CONTRIBUTING.md
 ---
 
 Obrigado por fazer parte da comunidade Hallyutoons! ❤️
+
+---
+
+emails para contato: hallyutoons@gmail.com | suportehallyutoons@gmail.com | contatohallyutoons@gmail.com
