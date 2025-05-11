@@ -39,3 +39,9 @@ Obrigado por fazer parte da comunidade Hallyutoons! ❤️
 ---
 
 emails para contato: hallyutoons@gmail.com | suportehallyutoons@gmail.com | contatohallyutoons@gmail.com
+---
+
+agradecimento As APIs publicas Usadas Para Informações 
+Myanilist 
+Kitsu.io
+Anilist
