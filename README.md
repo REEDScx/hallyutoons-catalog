@@ -2,7 +2,7 @@
 
 Bem-vindo ao Hub da Comunidade Hallyutoons! 🎉
 
-   ![37e69a27-2b42-44ca-94bf-05f715043229](https://cdn.discordapp.com/attachments/1268604222627254282/1371214692894113802/74_Sem_Titulo_20250511165721.png?ex=682252b2&is=68210132&hm=922912783d674ab8caedf0479dde63ed6d9883ec07231ececea249daab73af7e&)
+![74 Sem Título_20250511165721](https://github.com/user-attachments/assets/ee15d6da-c046-4824-b65a-c59238d58b3e)
 
 
 Este repositório é o local central para todos os fãs e usuários do [Hallyutoons](https://hallyutoons.site)
